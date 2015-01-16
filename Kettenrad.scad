@@ -28,9 +28,13 @@ sT = 1; // Spiel Transportzahn
 
 asT = 10; // Abstand seitlich Transportzahn
 
-sN = 20; // Seitenlaenge Nabe
+sN = 10; // Seitenlaenge Nabe
 
 NC = 5; // Anzahl Kettenglieder im Eingriff
+
+bFZ = 6; // Breite Fuehrungszahn
+hFZ = 10; // Hoehe Fuehrungszahn
+sFZ = 1; // Spiel Fuehrungszahn
 
 
 NR = round(B/aR);
@@ -55,22 +59,30 @@ r = Lr/2/tan(angM/2) - Hb/2;
 c = (r+tR)/r;
 
 difference(){
-	hull(){
+	union(){
+		hull(){
+			for(i = [0:NC-1]){
+				rotate([0,-angM*i,0]) translate([+Hb/2*tan(angM/2)-Lr/2,-B,r]){
+					cube([Lr-Hb*tan(angM/2),B,0.1]);
+				}
+			}
+		}
 		for(i = [0:NC-1]){
-			rotate([0,-angM*i,0]) translate([+Hb/2*tan(angM/2)-Lr/2,-B,r]){
-				cube([Lr-Hb*tan(angM/2),B,0.1]);
+			rotate([0,-angM*i,0]) translate([-Lr/2+(Hb/2-tR+sR)*tan(angM/2),0,r]){
+				for(j = [0:-NR]){
+					translate([0,j*aR-bR/2-Rerr+sR,0]) cube([Lr-(Hb/2-tR+sR)*2*tan(angM/2),bR-sR*2,tR-sR]);
+				}
 			}
 		}
 	}
 	translate([-sN/2, -B-1, -sN/2]) cube([sN,B+2,sN]);
-}
-for(i = [0:NC-1]){
-	rotate([0,-angM*i,0]) translate([-Lr/2+(Hb/2-tR+sR)*tan(angM/2),0,r]){
-		for(j = [0:-NR]){
-			translate([0,j*aR-bR/2-Rerr+sR,0]) cube([Lr-(Hb/2-tR+sR)*2*tan(angM/2),bR-sR*2,tR-sR]);
+	for(i = [0:NC-1]){
+		rotate([0,-angM*i,0]) translate([-Lr/2,-B/2-bFZ/2-sFZ,r-hFZ-sFZ]){
+			cube([Lr,bFZ+sFZ*2,hFZ+sFZ+tR+1]);
 		}
 	}
 }
+
 
 for(i = [0:NC-1]){
 	rotate([0,-angM*i,0]){
@@ -93,43 +105,40 @@ for(i = [0:NC-1]){
 					translate([Lr,0,Hb/2]) rotate([90,0,0]) cylinder(r=Lr-(j*alT+olT+lT)+sT,h=B);
 
 				}
-				// Kettenglied ---
-				translate([0,0,Hb/2])
-				%union(){
-					difference(){
-						hull(){
-							rotate([90,0,0]) cylinder(r=Hb/2, h=B);
-							translate([L,0,0]) rotate([90,0,0]) cylinder(r=Hb/2, h=B);
-						}
-						translate([0,1,0]) rotate([90,0,0]) cylinder(r=rF+sF, h=B+2);
-						translate([L,1,0]) rotate([90,0,0]) cylinder(r=rF, h=B+2);
-					
-						for(i = [0:NF-1]){
-							translate([0,-i*(bf2+bf2n)+aFa,0]) rotate([90,0,0]) cylinder(r=Hb/2+aFr, h=bf2n);
-						}
-						for(i = [0:NF-2]){
-							translate([L,-i*(bf1+bf1n)-(bf2n+bf1)/2+aFa,0]) rotate([90,0,0]) cylinder(r=Hb/2+aFr, h=bf1n);
-						}
-					
-						for(i = [0:-NR]){
-							translate([-Hb-1,(i)*aR-bR/2-Rerr,-Hb/2-1]) cube([L+Hb*2+2,bR,tR+1]);
-						}
-						
-						for(i = [-2:NT]){
-							translate([i*alT +olT,-bT/2-B/2-asT,-Hb/2-1]) cube([lT,bT,tT+1]);
-							translate([i*alT +olT,-bT/2-B/2+asT,-Hb/2-1]) cube([lT,bT,tT+1]);
-						}
+			}
+
+			// Kettenglied ---
+			translate([0,0,Hb/2])
+			%union(){
+				difference(){
+					hull(){
+						rotate([90,0,0]) cylinder(r=Hb/2, h=B);
+						translate([L,0,0]) rotate([90,0,0]) cylinder(r=Hb/2, h=B);
+					}
+					translate([0,1,0]) rotate([90,0,0]) cylinder(r=rF+sF, h=B+2);
+					translate([L,1,0]) rotate([90,0,0]) cylinder(r=rF, h=B+2);
+				
+					for(i = [0:NF-1]){
+						translate([0,-i*(bf2+bf2n)+aFa,0]) rotate([90,0,0]) cylinder(r=Hb/2+aFr, h=bf2n);
+					}
+					for(i = [0:NF-2]){
+						translate([L,-i*(bf1+bf1n)-(bf2n+bf1)/2+aFa,0]) rotate([90,0,0]) cylinder(r=Hb/2+aFr, h=bf1n);
+					}
+				
+					for(i = [0:-NR]){
+						translate([-Hb-1,(i)*aR-bR/2-Rerr,-Hb/2-1]) cube([L+Hb*2+2,bR,tR+1]);
 					}
 					
-					hull(){
-						translate([L/2-LP/2,-B,Hb/2]) cube([LP,B,0.1]);
-						translate([L/2-LP/2+(Ht-Hb)*tan(angP),-B,Ht-Hb/2]) cube([LP-2*(Ht-Hb)*tan(angP),B,0.1]);
+					for(i = [-2:NT]){
+						translate([i*alT +olT,-bT/2-B/2-asT,-Hb/2-1]) cube([lT,bT,tT+1]);
+						translate([i*alT +olT,-bT/2-B/2+asT,-Hb/2-1]) cube([lT,bT,tT+1]);
 					}
 				}
-
-
-
-
+				
+				hull(){
+					translate([L/2-LP/2,-B,Hb/2]) cube([LP,B,0.1]);
+					translate([L/2-LP/2+(Ht-Hb)*tan(angP),-B,Ht-Hb/2]) cube([LP-2*(Ht-Hb)*tan(angP),B,0.1]);
+				}
 			}
 		}
 	}
