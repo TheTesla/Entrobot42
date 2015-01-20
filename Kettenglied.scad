@@ -1,10 +1,12 @@
 
 $fn = 100;
 
-alT = 45; // Abstand laengs Transportzahn
-olT = 15;
+sL = 2; // Spiel Laenge, weil Kettenglied sonst ohne Abstand auf Kettenrad aufsitzen muesste
 
-L = 1*alT; // Laenge
+alT = 45; // Abstand laengs Transportzahn
+olT = 15+sL/2;
+
+L = 1*alT+sL; // Laenge
 B = 40;	// Breite
 NF = 3; // Anzahl Flansche
 rF = 3.95/2; // Innenradius Flansch
