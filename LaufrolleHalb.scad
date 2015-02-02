@@ -87,6 +87,7 @@ rotate([90,0,0]){
 			rotate([0,0,i*360/nS]) translate([aS,0,-1]) cylinder(r=sR,h=B+2);
 		}
 		translate([0,0,-1]) cylinder(r=rW,h=B+2);
+		translate([0,0,-1])cylinder(r=R+tR+1,h=B/2+1);
 	}
 }
 

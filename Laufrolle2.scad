@@ -42,6 +42,11 @@ asT = 10; // Abstand seitlich Transportzahn
 bFZ = 6; // Breite Fuehrungszahn
 hFZ = 10; // Hoehe Fuehrungszahn
 sFZ = 1; // Spiel Fuehrungszahn
+lFZ = 30; // Laenge Fuehrungszahn
+angFZ = 45; // Winkel Fuehrungszahn-Stirnseiten
+
+
+
 
 
 
@@ -70,6 +75,8 @@ rotate([90,0,0]){
 	difference(){
 		union(){
 			cylinder(r=R-hFZ-sFZ,h=B);
+			translate([0,0,B/2-bFZ/2-sFZ/2]) cylinder(r1=R,r2=R-hFZ-sFZ,h=B/2-(B/2-bFZ/2-sFZ/2));
+			translate([0,0,B/2]) cylinder(r2=R,r1=R-hFZ-sFZ,h=B/2-(B/2-bFZ/2-sFZ/2));
 			cylinder(r=R,h=B/2-bFZ/2-sFZ/2);
 			translate([0,0,B/2+bFZ/2+sFZ/2]) cylinder(r=R,h=B/2-bFZ/2-sFZ/2);
 			for(j = [0:-NR]){
@@ -125,6 +132,11 @@ for(i = [0:2]){
 				translate([L/2-LP/2,-B,Hb/2]) cube([LP,B,0.1]);
 				translate([L/2-LP/2+(Ht-Hb)*tan(angP),-B,Ht-Hb/2]) cube([LP-2*(Ht-Hb)*tan(angP),B,0.1]);
 			}
+			hull(){
+				translate([L/2,-B/2,-Hb/2]) scale([1,bFZ/lFZ,1]) cylinder(r=lFZ/2,h=0.1);
+				translate([L/2-lFZ/2+hFZ*tan(angFZ),-B/2-0.05,-Hb/2-hFZ]) cube([lFZ-hFZ*tan(angFZ)*2,0.1,0.1]);
+			}
+
 		}
 	}
 }
